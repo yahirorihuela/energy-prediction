@@ -63,14 +63,14 @@ def Determine_Multiple_Rows(df, column_of_interest, unique_identifiers_list, abb
     '''
     nested = any(isinstance(i, list) for i in unique_identifiers_list)
     relevant_rows_per_identifier = []
-    master_dictionary = {}
+    principal_dictionary = {}
     if nested == False:
         for unique_identifier in unique_identifiers_list:
             relevant_rows = df[df[column_of_interest] == unique_identifier].index
             relevant_row_numbers = list(relevant_rows)
             relevant_rows_per_identifier.append(unique_identifier)
             relevant_rows_per_identifier.append(relevant_row_numbers)
-        master_dictionary = {relevant_rows_per_identifier[i] : relevant_rows_per_identifier[i + 1] for i in range(0, len(relevant_rows_per_identifier), 2)}
+        principal_dictionary = {relevant_rows_per_identifier[i] : relevant_rows_per_identifier[i + 1] for i in range(0, len(relevant_rows_per_identifier), 2)}
     else: #may delete this else statement, work in progress, not pertinent to function description
         for similar_identifier in unique_identifiers_list:
             relevant_row_numbers = []
@@ -82,5 +82,39 @@ def Determine_Multiple_Rows(df, column_of_interest, unique_identifiers_list, abb
                     relevant_rows_per_identifier.append(abbrev)
                     break
             relevant_rows_per_identifier.append(relevant_row_numbers)
-        master_dictionary = {relevant_rows_per_identifier[i] : relevant_rows_per_identifier[i + 1] for i in range(0, len(relevant_rows_per_identifier), 2)}
-    return master_dictionary
+        principal_dictionary = {relevant_rows_per_identifier[i] : relevant_rows_per_identifier[i + 1] for i in range(0, len(relevant_rows_per_identifier), 2)}
+    return principal_dictionary
+
+def Dictionary_Maker(df, range1, range2, row_dictionary):
+    '''
+    Constructs a dictionary composing of the relevant rows
+    (found in the return value of the func. "Determine_Multiple_Rows")
+    and relevant columns (range1 and range2 parameters).
+
+    This dictionary prepares for another function which constructs another
+    DataFrame object out of the dictionary created herein.
+
+    Possible optimizations: could shrink the for loop on 112 each time it iterates
+    '''
+    storage = []
+    principal_dictionary = {}
+    for column in df.columns[range1:range2]: ## only uses the following columns
+        iterator = -1
+        for value in df[column]:
+            value_row = df[df[column] == value].index
+            value_row = list(value_row) #changes int64 type (return type of .index func) to list type
+            iterator += 1 #should increment 
+            if len(value_row) > 1: #this if block handles presence of duplicate values from the .index function
+                for item in value_row[:]:
+                    if iterator != item:
+                        value_row.remove(item)
+            for rows_of_interest in row_dictionary.values(): #this for block checks to see if the raw rows correspond to a relevant row number.
+                for relevant_rows in rows_of_interest:
+                    if value_row[0] == relevant_rows:
+                        real_values = df._get_value(value_row[0], column)
+                        storage.append(value_row[0])
+                        storage.append(real_values)
+        new_dictionary = {storage[i]:storage[i + 1] for i in range(0, len(storage), 2)}
+        storage.clear()
+        principal_dictionary.update({column : new_dictionary})
+        return principal_dictionary
