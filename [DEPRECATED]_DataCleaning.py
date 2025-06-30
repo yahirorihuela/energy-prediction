@@ -1,3 +1,8 @@
+#This file was useful for understanding the principles of 
+#handling row and column selection within pandas,
+#but there are far more effective means of simplifying a .csv file
+#in pandas by using the built-in .query and .sum functions
+#rather than slow and superfluous series of for statements.
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
