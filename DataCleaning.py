@@ -8,6 +8,13 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
+##############################
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.python.keras.layers import Dense
+from tensorflow.python.keras import Sequential
+from tensorflow.python.keras.layers import Dense, Dropout
+from tensorflow.python.keras.losses import MeanSquaredLogarithmicError
 
 def csv_conversion(data):
     dataframe = pd.read_csv(data, encoding="ISO-8859-1")
@@ -80,7 +87,24 @@ def integer_conversion_of_columns(dataframe, list_of_integer_columns, coordinate
         dataframe[coordinate_column] = dataframe[coordinate_column].apply(pd.to_numeric, errors='coerce', downcast=None)
         dataframe[coordinate_column] = dataframe.dropna(axis=0, how="any")
     return dataframe
+
+def number_of_value_instances(dataframe, column_of_interest):
+    '''
+    Column_of_interest parameter should be taken as a string, not in brackets.
     
+    Returns number of times a value appears in a column.
+    '''
+    return dataframe[column_of_interest].value_counts()
+
+def pivot_frame(dataframe, row_number_index, new_column, new_cell_values):
+    '''
+    BEHAVES AS AN EQUIVALENT ALTERNATIVE TO THE SORT FUNCTION.
+    IF NO FURTHER SORTING IS REQUIRED, MOVE TO
+    INTEGER CONVERSION FUNCTION
+    '''
+    pivoted_dataframe = dataframe.pivot(index=row_number_index, columns=new_column, values=new_cell_values)
+    return pivoted_dataframe
+
 def linear_regression(data, features, target, test_proportion):
     '''
     A preliminary to the larger goal of a shallow neural network.
@@ -105,10 +129,14 @@ def linear_regression(data, features, target, test_proportion):
     plt.annotate("r-squared = {:.3f}".format(r2_score(expected,predicted)),(0,1))
     plt.show()
 
+'''
+Example of functions in play:
 MBESS = csv_conversion("Training_Datasets/Municipal_Building_Energy_Use_and_Energy_Star_Score.csv")
-print(columns(MBESS))
 MBESS_New = sort(MBESS, sort_by_columns=["Year Built", "Electricity Use - Grid Purchase (kWh)", "Natural Gas Use (therms)", "Direct GHG Emissions (Metric Tons CO2e)", "ENERGY STAR Score", "Property GFA - Self-Reported (ftÂ²)", "Site Energy Use (kBtu)"])
-print(MBESS_New.head())
 int_convert_MBESS_New = integer_conversion_of_columns(MBESS_New, ["Year Built", "Electricity Use - Grid Purchase (kWh)", "Natural Gas Use (therms)", "Direct GHG Emissions (Metric Tons CO2e)", "ENERGY STAR Score", "Property GFA - Self-Reported (ftÂ²)", "Site Energy Use (kBtu)"])
-
 linear_regression(int_convert_MBESS_New, ["ENERGY STAR Score", "Property GFA - Self-Reported (ftÂ²)"], "Site Energy Use (kBtu)", .2)
+'''
+
+
+
+
