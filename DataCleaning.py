@@ -39,3 +39,37 @@ def csv_description(dataset, commentary=None):
         location = ("Location: Allegheny County / City of Pittsburgh")
     print(dataset + location + ". " + message + "\n" + note)
     return link
+
+def columns(dataframe):
+    return dataframe.columns
+
+def column_types(dataframe):
+    return dataframe.dtypes
+
+def sort(dataframe, sort_by_columns=None, sort_by_rows=None, column_used_for_row_lookup=None):
+    '''
+    Intended as a quality of life function that can help
+    the user rearrange the format of a DataFrame object if they wish
+
+    sort_by_columns should be a list,
+    column used_for_row_lookup should be a string of a columnname'''
+    if (sort_by_columns != None) and (sort_by_rows == None):
+        new_dataframe = dataframe[sort_by_columns]
+    elif (sort_by_columns == None) and sort_by_rows != None: 
+        new_dataframe = dataframe.loc[dataframe[column_used_for_row_lookup] == sort_by_rows, sort_by_columns]
+    return new_dataframe
+
+def integer_conversion_of_columns(dataframe, list_of_integer_columns, coordinate_column=None):
+    '''
+    A necessary function for the data cleaning process.
+    Forces the cells of a .csv file to conform to integer values.
+
+    If an error arises in the process, the entire row on which the invalid cell rests on is dropped.
+    '''
+    if coordinate_column == None:
+        dataframe[list_of_integer_columns] = dataframe[list_of_integer_columns].apply(pd.to_numeric, errors='coerce', downcast=None)
+        dataframe = dataframe.dropna(axis=0, how="any")
+    else:
+        dataframe[coordinate_column] = dataframe[coordinate_column].apply(pd.to_numeric, errors='coerce', downcast=None)
+        dataframe[coordinate_column] = dataframe.dropna(axis=0, how="any")
+        return dataframe
