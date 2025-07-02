@@ -38,3 +38,15 @@ def scale_datasests(x_train, x_test):
 
 #optimization and loss function required for backward propagation
 #Regularizers needed at each layer to prevent overfitting.
+
+def build_model_using_sequential(hidden_units1, hidden_units2, hidden_units3):
+    model = Sequential([
+        Dense(hidden_units1, kernel_initializer='normal', activation='relu'),
+        Dropout(0.2),
+        Dense(hidden_units2, kernel_initializer='normal', activation='relu'),
+        Dropout(0.2),
+        Dense(hidden_units3, kernel_initializer='normal', activation='relu'),
+        Dense(1, kernel_initializer='normal', activation='linear')
+    ])
+    return model
+    
