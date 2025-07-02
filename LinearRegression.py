@@ -10,6 +10,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
+##############################
+'''Does not have tensorflow libraries.'''
 
 def linear_regression(data, features, target, test_proportion):
     '''
@@ -37,7 +39,6 @@ def linear_regression(data, features, target, test_proportion):
 
 '''
 Example of functions in play:
-
 MBESS = DCG.csv_conversion("Training_Datasets/Municipal_Building_Energy_Use_and_Energy_Star_Score.csv")
 MBESS_New = DCG.sort(MBESS, sort_by_columns=["Year Built", "Electricity Use - Grid Purchase (kWh)", "Natural Gas Use (therms)", "Direct GHG Emissions (Metric Tons CO2e)", "ENERGY STAR Score", "Property GFA - Self-Reported (ftÂ²)", "Site Energy Use (kBtu)"])
 int_convert_MBESS_New = DCG.integer_conversion_of_columns(MBESS_New, ["Year Built", "Electricity Use - Grid Purchase (kWh)", "Natural Gas Use (therms)", "Direct GHG Emissions (Metric Tons CO2e)", "ENERGY STAR Score", "Property GFA - Self-Reported (ftÂ²)", "Site Energy Use (kBtu)"])
