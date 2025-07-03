@@ -81,3 +81,28 @@ history = model.fit(
     batch_size=10,
     validation_split=0.2
 )
+
+def plot_history(history, key):
+    plt.plot(history.history[key])
+    plt.plot(history.history['val_'+key])
+    plt.xlabel("Epochs")
+    plt.ylabel(key)
+    plt.legend([key, 'val_'+key])
+    plt.show()
+print(model.summary())
+
+plot_history(history, 'mean_squared_logarithmic_error')
+
+X_test['prediction'] = model.predict(x_test_scaled)
+
+print(X_test['prediction'])
+print(history.history)
+model.save("MBESS.h5")
+
+train_loss, train_acc = model.evaluate(x_train_scaled, y_train, batch_size=10)
+test_loss, test_acc = model.evaluate(x_test_scaled, y_test, batch_size=10)
+print('Train: %.3f, Test: %.3f' % (test_acc, test_loss))
+plt.plot(history.history['loss'], label='train')
+plt.plot(history.history['val_loss'], label='test')
+plt.legend()
+plt.show()
